@@ -2,6 +2,26 @@ package simhash
 
 import "math/rand"
 
+// Simhash is the simhash data sketch of an []float64
+type Simhash []uint8
+
+// NewSimhash constructs a simhash data sketch of the givec vector
+func NewSimhash(hyperplanes []Hyperplane, vector []float64) Simhash {
+	simhash := make(Simhash, len(hyperplanes))
+	for i, hyperplane := range hyperplanes {
+		var dotProduct float64 // the dot product of hyperplanes[i] and vector
+		for j, v := range vector {
+			dotProduct += hyperplane[j] * v
+		}
+		if dotProduct >= 0 {
+			simhash[i] = uint8(1)
+		} else {
+			simhash[i] = uint8(0)
+		}
+	}
+	return simhash
+}
+
 // Hyperplane is a dim dimensinoal hyperplane
 type Hyperplane []float64
 
