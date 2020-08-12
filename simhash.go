@@ -2,23 +2,33 @@ package simhash
 
 import "math/rand"
 
-// Builder builds simhash data sketches online
-type Builder struct {
+// Online builds simhash data sketches online
+type Online struct {
 	hyperplanes *[]Hyperplane
 }
 
-// NewBuilder constructs a simhash.Builder given the number of hyperplanes to
-// construct and the dimension of the input vectors
-func NewBuilder(hyperplaneCount, dim uint) Builder {
+// NewOnline constructs a simhash.Online builder given the number of hyperplanes 
+// to construct and the dimension of the input vectors
+func NewOnline(hyperplaneCount, dim uint) Online {
 	hyperplanes := NewHyperplanes(hyperplaneCount, dim)
-	return Builder{
+	return Online{
 		hyperplanes: &hyperplanes,
 	}
 }
 
 // Simhash constructs a simhash data sketch of the given vector
-func (b Builder) Simhash(vector []float64) Simhash {
-	return NewSimhash(*b.hyperplanes, vector)
+func (o Online) Simhash(vector []float64) Simhash {
+	return NewSimhash(*o.hyperplanes, vector)
+}
+
+// Offline sketches each vector in an offline fashion
+func Offline(vectors [][]float64, hyperplaneCount uint) []Simhash {
+	simhashs := make([]Simhash, len(vectors))
+	hyperplanes := NewHyperplanes(hyperplaneCount, uint(len(vectors[0])))
+	for i, vector := range vectors {
+		simhashs[i] = NewSimhash(hyperplanes, vector)
+	}
+	return simhashs
 }
 
 // Simhash is the simhash data sketch of an []float64
