@@ -7,7 +7,7 @@ type Online struct {
 	hyperplanes *[]Hyperplane
 }
 
-// NewOnline constructs a simhash.Online builder given the number of hyperplanes 
+// NewOnline constructs a simhash.Online builder given the number of hyperplanes
 // to construct and the dimension of the input vectors
 func NewOnline(hyperplaneCount, dim uint) Online {
 	hyperplanes := NewHyperplanes(hyperplaneCount, dim)
@@ -16,8 +16,8 @@ func NewOnline(hyperplaneCount, dim uint) Online {
 	}
 }
 
-// Simhash constructs a simhash data sketch of the given vector
-func (o Online) Simhash(vector []float64) Simhash {
+// Hash constructs a simhash data sketch of the given vector
+func (o Online) Hash(vector []float64) Simhash {
 	return NewSimhash(*o.hyperplanes, vector)
 }
 
@@ -54,7 +54,7 @@ func NewSimhash(hyperplanes []Hyperplane, vector []float64) Simhash {
 // Hyperplane is a dim dimensinoal hyperplane
 type Hyperplane []float64
 
-// NewHyperplanes constusts a hyperplane given number of hyperplanes to 
+// NewHyperplanes constusts a hyperplane given number of hyperplanes to
 // construct and the dimension of each hyperplane
 func NewHyperplanes(count, dim uint) []Hyperplane {
 	hyperplanes := make([]Hyperplane, count)
