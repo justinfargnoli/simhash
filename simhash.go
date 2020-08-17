@@ -17,7 +17,7 @@ func NewOnline(hyperplaneCount, dim uint) Online {
 }
 
 // Hash constructs a simhash data sketch of the given vector
-func (o Online) Hash(vector []float64) Simhash {
+func (o Online) Hash(vector []float64) *Simhash {
 	return NewSimhash(*o.hyperplanes, vector)
 }
 
@@ -26,7 +26,7 @@ func Offline(vectors [][]float64, hyperplaneCount uint) []Simhash {
 	simhashs := make([]Simhash, len(vectors))
 	hyperplanes := NewHyperplanes(hyperplaneCount, uint(len(vectors[0])))
 	for i, vector := range vectors {
-		simhashs[i] = NewSimhash(hyperplanes, vector)
+		simhashs[i] = *NewSimhash(hyperplanes, vector)
 	}
 	return simhashs
 }
@@ -35,7 +35,7 @@ func Offline(vectors [][]float64, hyperplaneCount uint) []Simhash {
 type Simhash []uint8
 
 // NewSimhash constructs a simhash data sketch of the given vector
-func NewSimhash(hyperplanes []Hyperplane, vector []float64) Simhash {
+func NewSimhash(hyperplanes []Hyperplane, vector []float64) *Simhash {
 	simhash := make(Simhash, len(hyperplanes))
 	for i, hyperplane := range hyperplanes {
 		var dotProduct float64 // the dot product of hyperplanes[i] and vector
@@ -48,7 +48,7 @@ func NewSimhash(hyperplanes []Hyperplane, vector []float64) Simhash {
 			simhash[i] = uint8(0)
 		}
 	}
-	return simhash
+	return &simhash
 }
 
 // Hyperplane is a dim dimensinoal hyperplane
