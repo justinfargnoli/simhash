@@ -19,17 +19,17 @@ func NewOnline(hyperplaneCount, dim uint) Online {
 }
 
 // Hash constructs a simhash data sketch of the given vector
-func (o Online) Hash(vector []float64) *[]Bit {
-	return NewSimhash(*o.hyperplanes, vector)
+func (o Online) Hash(vector *[]float64) *[]Bit {
+	return NewSimhash(o.hyperplanes, vector)
 }
 
 // Offline sketches each vector in an offline fashion
-func Offline(vectors [][]float64, hyperplaneCount uint) *[][]Bit {
-	simhashs := make([][]Bit, len(vectors))
-	hyperplanes := NewHyperplanes(hyperplaneCount, uint(len(vectors[0])))
+func Offline(vectors *[][]float64, hyperplaneCount uint) *[][]Bit {
+	simhashs := make([][]Bit, len(*vectors))
+	hyperplanes := NewHyperplanes(hyperplaneCount, uint(len((*vectors)[0])))
 
-	for i, vector := range vectors {
-		simhashs[i] = *NewSimhash(hyperplanes, vector)
+	for i, vector := range *vectors {
+		simhashs[i] = *NewSimhash(&hyperplanes, &vector)
 	}
 
 	return &simhashs
@@ -39,13 +39,13 @@ func Offline(vectors [][]float64, hyperplaneCount uint) *[][]Bit {
 type Bit uint8
 
 // NewSimhash constructs a simhash data sketch of the given vector
-func NewSimhash(hyperplanes []Hyperplane, vector []float64) *[]Bit {
-	simhash := make([]Bit, len(hyperplanes))
+func NewSimhash(hyperplanes *[]Hyperplane, vector *[]float64) *[]Bit {
+	simhash := make([]Bit, len(*hyperplanes))
 
-	for i, hyperplane := range hyperplanes {
+	for i, hyperplane := range *hyperplanes {
 		// The dot product of `hyperplanes[i]` and `vector`
 		var dotProduct float64
-		for j, v := range vector {
+		for j, v := range *vector {
 			dotProduct += hyperplane[j] * v
 		}
 
